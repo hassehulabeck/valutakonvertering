@@ -13,10 +13,15 @@
     var url = "https://www.hulabeck.se/html/temp/products.json";
 
     var xhr = new XMLHttpRequest;
+    xhr.addEventListener("error", XHRErrorHandler);
     var res;
 
+    function XHRErrorHandler(event) {
+        console.log(event);
+    };
+
     xhr.onreadystatechange = function() {
-        console.log(xhr.readyState);
+
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
                 res = xhr.response;

@@ -1,0 +1,71 @@
+<html>
+
+<head>
+    <title>Exchange</title>
+</head>
+
+<body>
+    <h1>Växlingskurser</h1>
+    <ul>
+    </ul>
+
+    <select name="baseRate" id="baseRate">
+        <option value="SEK">SEK</option>
+        <option value="NOK">NOK</option>
+        <option value="RUB">RUB</option>
+        <option value="GBP">GBP</option>
+    </select>
+</body>
+
+</html>
+<script>
+    var url = "https://api.exchangeratesapi.io/latest?base=";
+    var data;
+    var countryCode = "SEK";
+    getData(countryCode);
+
+    // Koppla select till att läsa från API.
+    var selektor = document.querySelector('select');
+    selektor.addEventListener('change', function(e) {
+        countryCode = selektor[selektor.selectedIndex].value;
+        getData(countryCode);
+    })
+
+    function getData(countryCode) {
+        const xhr = new XMLHttpRequest;
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    data = xhr.response;
+
+                    renderData(data);
+                }
+            }
+        }
+        xhr.open("GET", url + countryCode);
+        xhr.responseType = "json";
+        xhr.send();
+    }
+
+    var exchangeRates = ['USD', 'EUR'];
+
+
+    function renderData(data) {
+        let lista = document.querySelector('ul');
+        lista.innerHTML = "";
+
+        // Ändra rubrik
+        let rubbe = document.querySelector('h1');
+        rubbe.innerHTML = "Växlingskurs för " + countryCode;
+
+
+        // Loopa igenom växlingskurserna.
+        exchangeRates.forEach((rate) => {
+            var listItem = document.createElement('li')
+            let course = data.rates[rate];
+            listItem.innerHTML = `En ${countryCode} ger ${course.toFixed(2)} ${rate}`;
+            lista.appendChild(listItem);
+        })
+    }
+</script>
